@@ -1,8 +1,11 @@
 package main
 
-import "github.com/MsloveDl/HuobiProAPI/services"
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/MsloveDl/HuobiProAPI/services"
+)
 
 func main() {
-	fmt.Println(services.GetTicker("bcxbtc"))
+	fmt.Println(services.GetTrade("bcxbtc", 100))
 }
