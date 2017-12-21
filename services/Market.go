@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/MsloveDl/HuobiProAPI/config"
@@ -20,11 +21,15 @@ import (
 func GetKLine(strSymbol, strPeriod string, nSize int) models.KLineReturn {
 	kLineReturn := models.KLineReturn{}
 
-	strParams := "symbol=" + strSymbol + "&period=" + strPeriod +
-		"&size=" + strconv.Itoa(nSize)
-	strUrl := config.MARKET_URL + "/history/kline"
+	mapParams := make(map[string]string)
+	mapParams["symbol"] = strSymbol
+	mapParams["period"] = strPeriod
+	mapParams["size"] = strconv.Itoa(nSize)
 
-	jsonKLineReturn := untils.HttpGetRequest(strUrl, strParams)
+	strRequestUrl := "/market/history/kline"
+	strUrl := config.MARKET_URL + strRequestUrl
+
+	jsonKLineReturn := untils.HttpGetRequest(strUrl, mapParams)
 	json.Unmarshal([]byte(jsonKLineReturn), &kLineReturn)
 
 	return kLineReturn
@@ -36,10 +41,13 @@ func GetKLine(strSymbol, strPeriod string, nSize int) models.KLineReturn {
 func GetTicker(strSymbol string) models.TickerReturn {
 	tickerReturn := models.TickerReturn{}
 
-	strParams := "symbol=" + strSymbol
-	strUrl := config.MARKET_URL + "/detail/merged"
+	mapParams := make(map[string]string)
+	mapParams["symbol"] = strSymbol
 
-	jsonTickReturn := untils.HttpGetRequest(strUrl, strParams)
+	strRequestUrl := "/market/detail/merged"
+	strUrl := config.MARKET_URL + strRequestUrl
+
+	jsonTickReturn := untils.HttpGetRequest(strUrl, mapParams)
 	json.Unmarshal([]byte(jsonTickReturn), &tickerReturn)
 
 	return tickerReturn
@@ -52,10 +60,14 @@ func GetTicker(strSymbol string) models.TickerReturn {
 func GetMarketDepth(strSymbol, strType string) models.MarketDepthReturn {
 	marketDepthReturn := models.MarketDepthReturn{}
 
-	strParams := "symbol=" + strSymbol + "&type=" + strType
-	strUrl := config.MARKET_URL + "/depth"
+	mapParams := make(map[string]string)
+	mapParams["symbol"] = strSymbol
+	mapParams["type"] = strType
 
-	jsonMarketDepthReturn := untils.HttpGetRequest(strUrl, strParams)
+	strRequestUrl := "/market/depth"
+	strUrl := config.MARKET_URL + strRequestUrl
+
+	jsonMarketDepthReturn := untils.HttpGetRequest(strUrl, mapParams)
 	json.Unmarshal([]byte(jsonMarketDepthReturn), &marketDepthReturn)
 
 	return marketDepthReturn
@@ -67,10 +79,13 @@ func GetMarketDepth(strSymbol, strType string) models.MarketDepthReturn {
 func GetTradeDetail(strSymbol string) models.TradeDetailReturn {
 	tradeDetailReturn := models.TradeDetailReturn{}
 
-	strParams := "symbol=" + strSymbol
-	strUrl := config.MARKET_URL + "/trade"
+	mapParams := make(map[string]string)
+	mapParams["symbol"] = strSymbol
 
-	jsonTradeDetailReturn := untils.HttpGetRequest(strUrl, strParams)
+	strRequestUrl := "/market/trade"
+	strUrl := config.MARKET_URL + strRequestUrl
+
+	jsonTradeDetailReturn := untils.HttpGetRequest(strUrl, mapParams)
 	json.Unmarshal([]byte(jsonTradeDetailReturn), &tradeDetailReturn)
 
 	return tradeDetailReturn
@@ -83,10 +98,14 @@ func GetTradeDetail(strSymbol string) models.TradeDetailReturn {
 func GetTrade(strSymbol string, nSize int) models.TradeReturn {
 	tradeReturn := models.TradeReturn{}
 
-	strParams := "symbol=" + strSymbol + "&size=" + strconv.Itoa(nSize)
-	strUrl := config.MARKET_URL + "/history/trade"
+	mapParams := make(map[string]string)
+	mapParams["symbol"] = strSymbol
+	mapParams["size"] = strconv.Itoa(nSize)
 
-	jsonTradeReturn := untils.HttpGetRequest(strUrl, strParams)
+	strRequestUrl := "/market/history/trade"
+	strUrl := config.MARKET_URL + strRequestUrl
+
+	jsonTradeReturn := untils.HttpGetRequest(strUrl, mapParams)
 	json.Unmarshal([]byte(jsonTradeReturn), &tradeReturn)
 
 	return tradeReturn
@@ -95,14 +114,16 @@ func GetTrade(strSymbol string, nSize int) models.TradeReturn {
 // 获取Market Detail 24小时成交量数据
 // strSymbol: 交易对, btcusdt, bccbtc......
 // return: MarketDetailReturn对象
-// 未进行回测
 func GetMarketDetail(strSymbol string) models.MarketDetailReturn {
 	marketDetailReturn := models.MarketDetailReturn{}
 
-	strParams := "symbol=" + strSymbol
-	strUrl := config.MARKET_URL + "/detail"
+	mapParams := make(map[string]string)
+	mapParams["symbol"] = strSymbol
 
-	jsonMarketDetailReturn := untils.HttpGetRequest(strUrl, strParams)
+	strRequestUrl := "/market/detail"
+	strUrl := config.MARKET_URL + strRequestUrl
+
+	jsonMarketDetailReturn := untils.HttpGetRequest(strUrl, mapParams)
 	json.Unmarshal([]byte(jsonMarketDetailReturn), &marketDetailReturn)
 
 	return marketDetailReturn
@@ -113,13 +134,13 @@ func GetMarketDetail(strSymbol string) models.MarketDetailReturn {
 
 // 查询系统支持的所有交易及精度
 // return: SymbolsReturn对象
-// 未回测
 func GetSymbols() models.SymbolsReturn {
 	symbolsReturn := models.SymbolsReturn{}
 
-	strUrl := config.TRADE_URL + "/common/symbols"
+	strRequestUrl := "/v1/common/symbols"
+	strUrl := config.TRADE_URL + strRequestUrl
 
-	jsonSymbolsReturn := untils.HttpGetRequest(strUrl, "")
+	jsonSymbolsReturn := untils.HttpGetRequest(strUrl, nil)
 	json.Unmarshal([]byte(jsonSymbolsReturn), &symbolsReturn)
 
 	return symbolsReturn
@@ -127,13 +148,13 @@ func GetSymbols() models.SymbolsReturn {
 
 // 查询系统支持的所有币种
 // return: CurrencysReturn对象
-// 未回测
 func GetCurrencys() models.CurrencysReturn {
 	currencysReturn := models.CurrencysReturn{}
 
-	strUrl := config.TRADE_URL + "/common/currencys"
+	strRequestUrl := "/v1/common/currencys"
+	strUrl := config.TRADE_URL + strRequestUrl
 
-	jsonCurrencysReturn := untils.HttpGetRequest(strUrl, "")
+	jsonCurrencysReturn := untils.HttpGetRequest(strUrl, nil)
 	json.Unmarshal([]byte(jsonCurrencysReturn), &currencysReturn)
 
 	return currencysReturn
@@ -141,14 +162,45 @@ func GetCurrencys() models.CurrencysReturn {
 
 // 查询系统当前时间戳
 // return: TimestampReturn对象
-// 未回测
 func GetTimestamp() models.TimestampReturn {
 	timestampReturn := models.TimestampReturn{}
 
-	strUrl := config.TRADE_URL + "/common/timestamp"
+	strRequest := "/v1/common/timestamp"
+	strUrl := config.TRADE_URL + strRequest
 
-	jsonTimestampReturn := untils.HttpGetRequest(strUrl, "")
+	jsonTimestampReturn := untils.HttpGetRequest(strUrl, nil)
 	json.Unmarshal([]byte(jsonTimestampReturn), &timestampReturn)
 
 	return timestampReturn
 }
+
+//------------------------------------------------------------------------------------------
+// 用户资产API
+
+// 查询当前用户的所有账户, 根据包含的私钥查询
+// return: AccountsReturn对象
+func GetAccounts() models.AccountsReturn {
+	accountsReturn := models.AccountsReturn{}
+
+	strRequest := "/v1/account/accounts"
+	jsonAccountsReturn := untils.ApiKeyGet(make(map[string]string), strRequest)
+	json.Unmarshal([]byte(jsonAccountsReturn), &accountsReturn)
+
+	return accountsReturn
+}
+
+// 根据账户ID查询账户余额
+// nAccountID: 账户ID, 不知道的话可以通过GetAccounts()获取, 可以只现货账户, C2C账户, 期货账户
+// return BalanceReturn对象
+func GetAccountBalance(strAccountID string) models.BalanceReturn {
+	balanceReturn := models.BalanceReturn{}
+
+	strRequest := fmt.Sprintf("/v1/account/accounts/%s/balance", strAccountID)
+	jsonBanlanceReturn := untils.ApiKeyGet(make(map[string]string), strRequest)
+	json.Unmarshal([]byte(jsonBanlanceReturn), &balanceReturn)
+
+	return balanceReturn
+}
+
+//------------------------------------------------------------------------------------------
+// 交易API
