@@ -10,6 +10,8 @@ import (
 	"github.com/MsloveDl/HuobiProAPI/untils"
 )
 
+// 批量操作的API下个版本再封装
+
 //------------------------------------------------------------------------------------------
 // 交易API
 
@@ -191,7 +193,7 @@ func GetAccounts() models.AccountsReturn {
 
 // 根据账户ID查询账户余额
 // nAccountID: 账户ID, 不知道的话可以通过GetAccounts()获取, 可以只现货账户, C2C账户, 期货账户
-// return BalanceReturn对象
+// return: BalanceReturn对象
 func GetAccountBalance(strAccountID string) models.BalanceReturn {
 	balanceReturn := models.BalanceReturn{}
 
@@ -204,3 +206,41 @@ func GetAccountBalance(strAccountID string) models.BalanceReturn {
 
 //------------------------------------------------------------------------------------------
 // 交易API
+
+// 下单
+// placeRequestParams: 下单信息
+// return: PlaceReturn对象
+func Place(placeRequestParams models.PlaceRequestParams) models.PlaceReturn {
+	placeReturn := models.PlaceReturn{}
+
+	mapParams := make(map[string]string)
+	mapParams["account-id"] = placeRequestParams.AccountID
+	mapParams["amount"] = placeRequestParams.Amount
+	if 0 < len(placeRequestParams.Price) {
+		mapParams["price"] = placeRequestParams.Price
+	}
+	if 0 < len(placeRequestParams.Source) {
+		mapParams["source"] = placeRequestParams.Source
+	}
+	mapParams["symbol"] = placeRequestParams.Symbol
+	mapParams["type"] = placeRequestParams.Type
+
+	strRequest := "/v1/order/orders/place"
+	jsonPlaceReturn := untils.ApiKeyPost(mapParams, strRequest)
+	json.Unmarshal([]byte(jsonPlaceReturn), &placeReturn)
+
+	return placeReturn
+}
+
+// 申请撤销一个订单请求
+// strOrderID: 订单ID
+// return: PlaceReturn对象
+func SubmitCancel(strOrderID string) models.PlaceReturn {
+	placeReturn := models.PlaceReturn{}
+
+	strRequest := fmt.Sprintf("/v1/order/orders/%s/submitcancel", strOrderID)
+	jsonPlaceReturn := untils.ApiKeyPost(make(map[string]string), strRequest)
+	json.Unmarshal([]byte(jsonPlaceReturn), &placeReturn)
+
+	return placeReturn
+}
